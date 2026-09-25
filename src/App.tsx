@@ -173,6 +173,17 @@ function App() {
     setFileStatus('Encrypted vault exported')
   }
 
+  const copyRecoveryKey = async () => {
+    if (!recoveryKeyNotice) return
+
+    try {
+      await navigator.clipboard.writeText(recoveryKeyNotice)
+      setFileStatus('Recovery key copied')
+    } catch {
+      setFileStatus('Copy failed. Allow clipboard access and try again.')
+    }
+  }
+
   const importVault = async (file: File) => {
     setFileStatus('Importing...')
     const currentVault = getEncryptedVault()
@@ -297,7 +308,7 @@ function App() {
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0]
   const firstName = googleAccount?.name.split(' ')[0] || 'there'
 
-  if (!accountReady) return <GoogleSignIn onSignedIn={(account) => { setGoogleAccount(account); setAccountReady(true) }} onContinueLocally={() => setAccountReady(true)} />
+  if (!accountReady) return <GoogleSignIn onSignedIn={(account) => { setGoogleAccount(account); setAccountReady(true) }} />
   if (!accessReady) return null
   if (!vaultPassword) return <VaultAccess setup={needsSetup} onUnlock={unlockVault} />
 
@@ -356,9 +367,12 @@ function App() {
             <div>
               <strong>Save your recovery key</strong>
               <p>{recoveryKeyNotice}</p>
-              <span>You need this key if you forget your master password.</span>
+              <span>You need this key if you forget your vault password.</span>
             </div>
-            <button className="text-button" onClick={() => setRecoveryKeyNotice('')}>I saved it</button>
+            <div className="recovery-notice-actions">
+              <button className="secondary-button" type="button" onClick={() => void copyRecoveryKey()}>Copy key</button>
+              <button className="text-button" type="button" onClick={() => setRecoveryKeyNotice('')}>I saved it</button>
+            </div>
           </aside>
         )}
         <div className="content-grid">

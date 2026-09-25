@@ -62,10 +62,6 @@ function ItemDetails({
         />
       ) : (
         <>
-          <div className="detail-topline">
-            <span className="detail-type">{item.type}</span>
-            <button className="more-button" aria-label="More actions">...</button>
-          </div>
           <h2>{item.title}</h2>
           <p className="muted">{item.detail}</p>
 
@@ -100,7 +96,6 @@ function ItemDetails({
             <button className="primary-button" onClick={onEdit}>Edit item</button>
             <button className="secondary-button" onClick={onDelete}>Delete</button>
           </div>
-          <p className="last-updated">Last updated today</p>
         </>
       )}
     </section>

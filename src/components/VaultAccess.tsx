@@ -30,7 +30,7 @@ function VaultAccess({ setup, onUnlock }: VaultAccessProps) {
     try {
       await onUnlock(useRecoveryKey ? '' : password, useRecoveryKey ? password : undefined)
     } catch {
-      setError('The password is not correct.')
+      setError(useRecoveryKey ? 'Recovery key is not correct.' : 'The password is not correct.')
     } finally {
       setBusy(false)
     }
@@ -41,9 +41,9 @@ function VaultAccess({ setup, onUnlock }: VaultAccessProps) {
       <form className="locked-panel access-form" onSubmit={submit}>
         <p className="eyebrow">SECRET KEEPER</p>
         <h1>{setup ? 'Create your vault' : 'Unlock your vault'}</h1>
-        <p className="muted">{setup ? 'Choose a master password to protect your records.' : useRecoveryKey ? 'Enter your recovery key to continue.' : 'Enter your master password to continue.'}</p>
+        <p className="muted">{setup ? 'Choose a vault password to encrypt your records.' : useRecoveryKey ? 'Enter your recovery key to decrypt your vault.' : 'Enter your vault password to decrypt your records.'}</p>
         <label className="form-field">
-          <span>{useRecoveryKey ? 'Recovery key' : 'Master password'}</span>
+          <span>{useRecoveryKey ? 'Recovery key' : 'Vault password'}</span>
           <input type={useRecoveryKey ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} autoFocus />
         </label>
         {setup && !useRecoveryKey && (
@@ -53,14 +53,16 @@ function VaultAccess({ setup, onUnlock }: VaultAccessProps) {
           </label>
         )}
         {error && <p className="form-error" role="alert">{error}</p>}
-        <button className="primary-button" type="submit" disabled={busy}>
-          {busy ? 'Checking...' : setup ? 'Create vault' : 'Unlock vault'}
-        </button>
-        {!setup && (
-          <button className="text-button access-switch" type="button" onClick={() => { setUseRecoveryKey(!useRecoveryKey); setPassword(''); setError('') }}>
-            {useRecoveryKey ? 'Use master password' : 'Use recovery key'}
+        <div className="access-actions">
+          <button className="primary-button" type="submit" disabled={busy}>
+            {busy ? 'Checking...' : setup ? 'Create vault' : 'Unlock vault'}
           </button>
-        )}
+          {!setup && (
+            <button className="text-button access-switch" type="button" onClick={() => { setUseRecoveryKey(!useRecoveryKey); setPassword(''); setError('') }}>
+              {useRecoveryKey ? 'Use vault password' : 'Forgot your vault password? Use recovery key'}
+            </button>
+          )}
+        </div>
       </form>
     </main>
   )

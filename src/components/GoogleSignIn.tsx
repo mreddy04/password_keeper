@@ -3,7 +3,6 @@ import { googleSignInConfig, type GoogleAccount } from '../auth/google'
 
 type GoogleSignInProps = {
   onSignedIn: (account: GoogleAccount) => void
-  onContinueLocally: () => void
 }
 
 function readGoogleAccount(credential: string): GoogleAccount {
@@ -18,7 +17,7 @@ function readGoogleAccount(credential: string): GoogleAccount {
   return { id: decoded.sub, email: decoded.email, name: decoded.name, picture: decoded.picture, credential }
 }
 
-function GoogleSignIn({ onSignedIn, onContinueLocally }: GoogleSignInProps) {
+function GoogleSignIn({ onSignedIn }: GoogleSignInProps) {
   const isConfigured = Boolean(googleSignInConfig.clientId)
   const buttonContainer = useRef<HTMLDivElement>(null)
   const [error, setError] = useState('')
@@ -72,11 +71,6 @@ function GoogleSignIn({ onSignedIn, onContinueLocally }: GoogleSignInProps) {
         )}
         {!isConfigured && <p className="setup-hint">Add a Google OAuth client ID before enabling real sign-in.</p>}
         {error && <p className="form-error" role="alert">{error}</p>}
-        <div className="account-divider"><span>Development only</span></div>
-        <button className="text-button local-access-button" onClick={onContinueLocally}>
-          Continue locally without Google
-        </button>
-        <p className="account-note">No Google account data is used in local mode.</p>
       </section>
     </main>
   )
